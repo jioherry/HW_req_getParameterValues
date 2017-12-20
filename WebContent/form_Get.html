@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<HTML>
+<HEAD>
+<TITLE>Upload.html</TITLE>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script src="http://code.jquery.com/jquery-1.8.3.min.js"></script>
+<!-- <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script> 打開，HTML 會出錯-->
+<script type="text/javascript">
+	$(document).ready( function() {
+		$(".touch").change( function() {
+			// 用 jQuery 選擇該 input 由哪一個觸發，再去選擇他的兄弟元素
+			var previewplace = $(this).siblings().attr('id');
+			preview(this, previewplace); // 呼叫 preview function，帶入參數
+		});
+		
+// 		$(".touch").change(function() {
+// 			$(this).next().attr("src", $(this).val()); // jquery簡短寫法，只適用IE瀏覽
+// 		});
+		
+		/* 預覽圖 input 輸入 input[type=file] 的 this */
+		function preview(input, previewplace) {
+			// 若有選取檔案
+			if (input.files && input.files[0]) {
+				// 建立一個物件，使用 Web APIs 的檔案讀取器(FileReader 物件) 來讀取使用者選取電腦中的檔案
+				var reader = new FileReader();
+				// 事先定義好，當讀取成功後會觸發的事情
+				reader.onload = function (e) {
+					console.log(e);
+		            // 這裡看到的 e.target.result 物件，是使用者的檔案被 FileReader 轉換成 base64 的字串格式，
+		            // 在這裡我們選取圖檔，所以轉換出來的，會是如 『data:image/jpeg;base64,.....』這樣的字串樣式。
+		            // 我們用它當作圖片路徑就對了。
+					//input.attr('src', e.target.result);
+		            var showphoto = '#'+ previewplace; // '#'+ previewplace -> '#o1'(id="o1")
+		            $(showphoto).attr('src', e.target.result); // 將圖片位址塞入 src 內
+				}
+				// 因為上面定義好讀取成功的事情，所以這裡可以放心讀取檔案
+				reader.readAsDataURL(input.files[0]);
+			}
+		}
+	});
+</script>
+</HEAD>
+<BODY>
+	<h3> Checkbox 上傳練習</h3>
+	<form action="HelloGet" method="get">
+		<input type="checkbox" name="user_status" value="路人甲">路人甲
+		<input type="checkbox" name="user_status" value="路人乙">路人乙
+		<input type="checkbox" name="user_status" value="路人丙">路人丙
+		<br>
+		<input type="submit">
+	</form>
+	<h3>Photo 上傳練習</h3>
+	<form action="PhotoUpload" method="post" enctype="multipart/form-data">
+		<div>
+			<input type="file" class="touch" name="upfile1">
+			<img class="preview" src="" id="o1">
+		</div>
+		<div>
+			<input type="file" class="touch" name="upfile2">
+			<img class="preview" src="" id="o2">
+		</div>
+		<input type="submit">	
+	</form>
+</BODY>
+</HTML>
